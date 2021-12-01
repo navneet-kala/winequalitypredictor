@@ -3,7 +3,6 @@ RUN apt-get update && \
     apt-get install -y python3-pip python3-dev && \
     ln -s /usr/bin/python3 python
 ENV TZ=US/Eastern
-RUN mkdir -p /dataset
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
 RUN pip3 install pyspark && \
     pip3 install numpy && \
@@ -16,3 +15,4 @@ ENV PYSPARK_DRIVER_PYTHON=/usr/bin/python3
 ADD Predict.py /
 ADD target /
 ENTRYPOINT ["python3","/Predict.py"]
+
