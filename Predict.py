@@ -9,25 +9,28 @@ import pyspark.sql.functions as func
 import pyspark
 
 spark = SparkSession.builder.getOrCreate()
-
-#Single machine prediction
+#spark.sparkContext.setLogLevel("ERROR")
+#Single machine prediction application
 conf = SparkConf().setAppName("Wine_Quality_Pred").setMaster("local[1]")
 
-sc = SparkContext.getOrCreate()
+#sc = SparkContext.getOrCreate()
 #sc.setLogLevel("ERROR")
 #log4j = sc._jvm.org.apache.log4j
 #log4j.LogManager.getRootLogger().setLevel(log4j.Level.ERROR)
+import sys
+fileName = sys.argv[1]
+
+#Load trained model
+#rf = RandomForestClassifier.load("wineQpredmodel.model")
+rf = RandomForestClassifier.load("hdfs:////home/ec2-user/newmodel.model")
 
 
-#Load the trained model
-rf = RandomForestClassifier.load("newmodel.model")
+#Read the input data from csv
+df_pyspark = spark.read.format('csv').options(header='true', inferSchema='true', delimiter=';').load(fileName)
+#df_pyspark = spark.read.format('csv').options(header='true', inferSchema='true', delimiter=';').csv("hdfs:////home/ec2-user/ValidationDataset.csv")
 
 
-#Read the test data
-df_pyspark = spark.read.format('csv').options(header='true', inferSchema='true', delimiter=';').csv("ValidationDataset.csv")
-
-
-#'quality' is label column.Others are feature columns. 
+#Assign all columns other than 'quality' as the feature columns. 'quality' is lable column.
 featureColumns = [col for col in df_pyspark.columns if col != '""""quality"""""']
 
 
@@ -55,7 +58,7 @@ recall = rf_metrics.weightedRecall
 f1Score = rf_metrics.weightedFMeasure()
 
 print('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
-print("Final result: ")
+print("Final result/statistics: ")
 print("=============================")
 print("F1 Score  = %s" % f1Score)
 print("=============================")
