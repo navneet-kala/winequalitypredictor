@@ -2,6 +2,7 @@
 
 ## Github
 Parallel Training - https://github.com/navneet-kala/winequalitypredictor/blob/main/Train.py 
+
 Single Machine Prediction -https://github.com/navneet-kala/winequalitypredictor/blob/main/Predict.py 
 
 ## Docker
